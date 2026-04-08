@@ -92,6 +92,8 @@ RUN pnpm build:docker
 # Force pnpm for UI build (Bun may fail on ARM/Synology architectures)
 ENV OPENCLAW_PREFER_PNPM=1
 RUN pnpm ui:build
+# PhiClaw: Inject toggle UI into the webchat
+RUN bash scripts/inject-phiclaw-ui.sh dist/control-ui/index.html || echo "[phiclaw] UI injection skipped (non-fatal)"
 
 # Prune dev dependencies and strip build-only metadata before copying
 # runtime assets into the final image.
@@ -294,6 +296,11 @@ RUN mkdir -p /home/node/.cache/huggingface && \
 # Copy PhiClaw auto-updater script (run from host, included for reference)
 COPY --chown=node:node scripts/update-phiclaw.sh /app/scripts/update-phiclaw.sh
 RUN chmod +x /app/scripts/update-phiclaw.sh
+
+# PhiClaw: Copy workspace initialization scripts
+COPY --chown=node:node scripts/generate-agents-catalog.cjs /app/scripts/generate-agents-catalog.cjs
+COPY --chown=node:node scripts/phiclaw-workspace-init.sh /app/scripts/phiclaw-workspace-init.sh
+RUN chmod +x /app/scripts/phiclaw-workspace-init.sh
 
 # Copy PhiClaw entrypoint (first-launch setup: QMD collections + embedding)
 COPY --chown=node:node scripts/entrypoint.sh /app/scripts/entrypoint.sh

@@ -3,12 +3,15 @@
  * generate-agents-catalog.cjs
  *
  * Reads all agent Markdown files from agents/ directory,
- * extracts YAML front-matter, and generates AGENTS.md — a workspace
+ * extracts YAML front-matter, and generates PHICLAW-AGENTS.md — a workspace
  * bootstrap file that includes orchestration instructions + full agent catalog.
+ *
+ * This file is loaded AS AN EXTRA BOOTSTRAP FILE (not the main AGENTS.md)
+ * to avoid overwriting the user's custom AGENTS.md.
  *
  * Usage:
  *   node scripts/generate-agents-catalog.cjs [output-path]
- *   node scripts/generate-agents-catalog.cjs > AGENTS.md
+ *   node scripts/generate-agents-catalog.cjs > PHICLAW-AGENTS.md
  */
 
 const fs = require("fs");
@@ -84,59 +87,39 @@ function buildCatalog() {
 
   // ── Header: Orchestration Protocol ──
   const lines = [];
-  lines.push("# AGENTS.md — PhiClaw Multi-Agent Orchestration");
+  lines.push("# PHICLAW-AGENTS.md — PhiClaw Multi-Agent Orchestration");
   lines.push("");
   lines.push(`> **${total} specialized agents** across **${Object.keys(divisions).length} divisions** — powered by PhiClaw`);
+  lines.push(">");
+  lines.push("> This file is auto-generated from the agents/ directory.");
+  lines.push("> Do not edit manually — changes will be overwritten on next boot.");
   lines.push("");
   lines.push("---");
   lines.push("");
-  lines.push("## 🎯 Two-Stage Pipeline: Prompt Architect → Orchestrator");
+  lines.push("## 🎯 Orchestration Protocol");
   lines.push("");
-  lines.push("Every user message goes through a **mandatory 2-stage pipeline**:");
+  lines.push("When handling user requests, follow this process:");
   lines.push("");
-  lines.push("### Stage 1: 🧠 Prompt Architect");
-  lines.push("Transform the user's raw input into an expert-level prompt.");
+  lines.push("### 1. Assess Complexity");
+  lines.push("- **Simple** → Answer directly, cite relevant agent if helpful");
+  lines.push("- **Moderate** → Read 1-2 agent profiles from `agents/<division>/<id>.md`, apply their methodology");
+  lines.push("- **Complex** → Plan multi-agent approach, combine expertise from multiple divisions");
   lines.push("");
-  lines.push("**Process:**");
-  lines.push("1. **Analyze** the user's intent (create/analyze/optimize/fix/plan/research)");
-  lines.push("2. **Identify** all domains involved and their interdependencies");
-  lines.push("3. **Expand** with: specific requirements, edge cases, quality criteria, constraints, deliverable format");
-  lines.push("4. **Structure** into a comprehensive technical brief");
+  lines.push("### 2. Select Agents");
+  lines.push("Scan the registry below. Match the task to the right division(s), then read the agent's full `.md` file for detailed methodology, frameworks, and personality.");
   lines.push("");
-  lines.push("**Output:** Display the enhanced prompt in a collapsible block:");
-  lines.push("```");
-  lines.push("<details>");
-  lines.push("<summary>📝 Enhanced Prompt (by Prompt Architect)</summary>");
+  lines.push("### 3. Compose Response");
+  lines.push("- Apply each agent's expertise and frameworks");
+  lines.push("- For multi-agent responses, structure with clear sections");
+  lines.push("- Cite contributing agents: e.g., _(per 🏗️ Backend Architect)_");
+  lines.push("- Deliver concrete, actionable output — not generic advice");
   lines.push("");
-  lines.push("[The full enhanced prompt goes here — this is what the orchestrator will work from]");
-  lines.push("");
-  lines.push("</details>");
-  lines.push("```");
-  lines.push("");
-  lines.push("### Stage 2: 🎯 Orchestrator");
-  lines.push("Take the enhanced prompt from Stage 1 and orchestrate the response.");
-  lines.push("");
-  lines.push("**Process:**");
-  lines.push("1. **Route** — Select 1-5 agents from the registry below whose expertise matches the enhanced prompt");
-  lines.push("2. **Plan** — Break the enhanced prompt into sub-tasks, one per agent");
-  lines.push("3. **Execute** — For each agent: read its full profile from `agents/<division>/<id>.md`, apply its methodology");
-  lines.push("4. **Compile** — Synthesize all agent outputs into a unified, high-quality response");
-  lines.push("");
-  lines.push("**Output format:**");
-  lines.push("```");
-  lines.push("🎯 Orchestration: [agent-1, agent-2, agent-3]");
-  lines.push("");
-  lines.push("[Response content with agent expertise applied]");
-  lines.push("");
-  lines.push("_(per 🏗️ Agent Name)_ for each section");
-  lines.push("```");
-  lines.push("");
-  lines.push("### Rules");
-  lines.push("- **ALWAYS** show the enhanced prompt block (Stage 1 output) — the user must see what was generated");
-  lines.push("- **ALWAYS** list the selected agents at the start of the response");
-  lines.push("- **ALWAYS** cite which agent contributed to each section");
-  lines.push("- For simple questions (greetings, yes/no), skip the pipeline and answer directly");
-  lines.push("- Read the full `.md` profile of each selected agent from `agents/<division>/<id>.md` before composing");
+  lines.push("### 4. Prompt Engineering (automatic)");
+  lines.push("When the Prompt Engineer is enabled, raw user requests are automatically transformed:");
+  lines.push("1. Intent detection (create/analyze/optimize/fix/plan/research)");
+  lines.push("2. Domain classification");
+  lines.push("3. Complexity assessment");
+  lines.push("4. Agent matching");
   lines.push("");
   lines.push("---");
   lines.push("");
